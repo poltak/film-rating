@@ -1,10 +1,15 @@
+#!/usr/bin/env node
+
+// Check args
+if (process.argv.length < 3) {
+  console.error('Please enter a movie title');
+  process.exit(1);
+}
+
 var http = require('http');
 
 // Get all the args into a single search term (start at argv index 2)
-var searchTerm = process.argv[2];
-process.argv.slice(3).forEach(function(term) {
-  searchTerm += '+' + term;
-});
+var searchTerm = process.argv.slice(2).join('+');
 
 // The options for the HTTP request
 var options = {
