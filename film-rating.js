@@ -1,13 +1,12 @@
 var http = require('http');
 
 // Get all the args into a single search term (start at argv index 2)
-var searchTerm = "";
-process.argv.slice(2).forEach(function(term) {
-  searchTerm += term;
+var searchTerm = process.argv[2];
+process.argv.slice(3).forEach(function(term) {
+  searchTerm += '+' + term;
 });
 
-
-// Send request to OMDb API
+// The options for the HTTP request
 var options = {
   host: 'www.omdbapi.com',
   path: '/?t=' + searchTerm,
@@ -16,15 +15,16 @@ var options = {
 
 http.request(options, function(response) {
   // This is what the returned JSON will be stored in
-  var jsonstr = '';
+  var jsonStr = '';
 
   // Append each chunk to make up the entire JSON
   response.on('data', function(chunk) {
-    jsonstr += chunk;
+    jsonStr += chunk;
   });
 
+  // Parse the received JSON string and print the film title and rating
   response.on('end', function() {
-    console.log(jsonstr);
+    var jsonObj = JSON.parse(jsonStr);
+    console.log(jsonObj.Title + ': ' + jsonObj.imdbRating);
   });
 }).end();
-
